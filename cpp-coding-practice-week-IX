@@ -1,1 +1,1137 @@
+//5.7 5.8
+#include"pch.h"
+#include<iostream>
+#include<cctype> //判断字母 数字 大小写字母
+using namespace std;
+#define N 3
+int i2 = 10;
+void swap(int a, int b) //5.8.1 1) //形参是局部变量
+{
+	cout << "(2)" << a << '\t' << b << '\t' << endl;
+	if (a < b)
+	{
+		int t;
+		t = a; a = b; b = t;
+	}
+	cout << "(3)" << a << '\t' << b << '\t' << endl;
+}
 
+int main()
+{
+	//5.7 使用c++系统函数
+	int i;
+	char c;
+	cout << "输入三个字母：\n";
+	for (i = 0; i < N; i++)
+	{
+		cin >> c;
+		if (islower(c))
+			c -= 'a' - 'A';
+		cout << c << '\t';
+	}
+	cout << endl;
+
+	//5.8.1 
+	//标识符只能在声明它或定义它的范围内进行存取，而在该范围之外不可以进行存取
+
+	//1)块作用域 //被调用函数的实参属于此被调用函数所在块的块作用域。
+	int m1, n1;
+	//在一个函数内部定义或在一个块中定义的变量称为局部变量
+	//形参是局部变量
+	int a1, b1;
+	cout << "input two integers:\n" << endl;
+	cin >> a1 >> b1;
+	cout << "(1)" << a1 << '\t' << b1 << '\t' << endl;
+	swap(a1, b1);
+	cout << "(4)" << a1 << '\t' << b1 << '\t' << endl;
+
+	//具有块作用域的标识符在其作用域内，将屏蔽在本块有效的同名标识符，即局部定义优先
+	int a2 = 1, b2 = 2;
+	++a2;
+	++b2;
+	{ //大括号内b2可重新定义
+		int b2 = 4, c2; //一旦退出此块，此块内定义的变量b2、c2就不存在
+		c2 = a2 + b2;
+		cout << "a=" << a2 << "," << "b=" << b2 << "," << "c=" << c2 << endl;
+	}
+	cout << "a=" << a2 << "," << "b=" << b2 << endl;
+
+	//for语句中定义的循环控制变量具有块作用域，在有的编译系统中其作用域为从定义处开始到 该for语句所在的块 结束为止，而不是仅仅作用于for语句；而有的编译系统仅仅作用于for语句。
+	/*
+	在vc++为非法
+	for (int i1 = 0; i1 < 10; i1++)
+		cout << i1 << '\t';
+	cout << "i=" << i1 << endl;
+	*/
+
+	//2)文件作用域
+	/*
+	文件是c++的编译单位
+	在所有函数外定义的标识符具有文件作用域
+	在函数外定义的变量或用extern声明的变量称为全局变量。当全局变量出现先引用后定义时，要用extern对全局变量进行外部声明。
+	在块作用域内可通过作用域运算符::来引用与局部变量同名的全局变量
+
+	*/
+	int i2, j = 5;
+	i2 = 20;
+	::i2 = ::i2 + 4;
+	j = ::i2 + i2;
+	cout << "::i2=" << ::i2 << endl;
+	cout << "i2=" << i2 << endl;
+	cout << "j=" << j << endl;
+
+	//3) 函数原型作用域
+	/*
+	在函数原型的参数列表内声明的参数名，作用域只在该函数原型内
+	因此，在函数原型中声明的标识符可以与函数定义中声明的标识符不同
+	*/
+	//函数max()原型声明： float max(float a, float b)
+	//函数max()的定义： float max(float x, float y)
+
+	// 4)函数作用域
+	/*
+	作为goto语句转移目标的标志，标号具有函数作用域
+	在本函数内给出的标号，无论它在什么地方，都可以用goto引用它。
+	但是不能用goto语句把流程转到其他函数体内。语句标号是唯一具有函数作用域的标识符
+
+	void f1()
+	{
+		{
+			label1: ...
+		}
+		...
+		if(...) goto label1;     //valid
+		if(...) goto label2;     //invalid
+	}
+
+	void f2()
+	{
+		label2:...
+	}
+	*/
+
+
+
+	return 0; //若放中间 之后代码不再执行
+}
+
+float f1(int a) //5.8.1 1)
+{
+	int b, c;
+	return 0;
+}
+
+char f2(int x, int y) //5.8.1 1)
+{
+	int b, c;
+	int i, j;
+	return 0;
+}
+
+//7.1.1
+#include"pch.h"
+#include<iostream>
+using namespace std;
+#include<iomanip>
+
+int x1[5]; // A 全局数组 静态 各元素初值为0
+int main(void)
+{
+	int array[10]; //一维数组定义 方括号内是整型常量
+	int array2['a']; //方括号里是符号常量
+	/*
+	int n;
+	cin >> n;
+	int array[n];
+	↑
+	不允许 整型常量表达式不能是变量
+	↓
+	int a = 2;
+	int array4[a];
+	*/
+
+	//修改数组大小： 用符号常量或const整型变量
+#define N 100 //不用分号
+	int array5[N];
+
+	const int SIZE = 200;
+	float x[SIZE];
+
+	//一维数组元素的引用
+	//c++规定只能逐个引用数组元素而不能一次引用整个数组
+	//下标可以是整型常量或整形表达式
+	array[8];
+	array[2 * 3];
+	int i1 = 2;
+	array[i1];
+
+	int i, a[10];
+	for (i = 0; i <= 9; i++)
+		a[i] = i;
+	for (i = 9; i >= 0; i--)
+		cout << setw(3) << a[i];
+	cout << endl;
+
+	//一维数组初始化
+	// 1)定义数组时对数组元素赋初值
+	int a1[10] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+	for (i = 0; i <= 9; i++)
+		cout << setw(3) << a1[i];
+	cout << endl;
+
+	/*
+	int a2[10];
+	a2[10] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+	不合法
+	*/
+
+	// 2）给一部分元素赋初值
+	int a3[10] = { 0, 1, 2, 3 }; //表示只给前四个元素赋初值，后6个元素值为0
+	/*
+	cout << a3[10] << endl;
+	不合法
+	*/
+
+	for (i = 0; i <= 9; i++)
+		cout << setw(3) << a3[i] << endl;
+
+	// 3)全部元素为0
+	int a4[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	int a5[10] = { 0 };
+	int a6[10] = { 6 }; //第一个是6 其他是0
+	for (i = 0; i <= 9; i++)
+		cout << setw(3) << a4[i] << setw(3) << a5[i] << setw(3) << a6[i] << endl;
+
+	int a7[10] = { 5 }; //5  0  0  0  0  0  0  0  0  0
+	for (i = 0; i <= 9; i++)
+		cout << setw(3) << a7[i];
+	cout << endl;
+
+	// 4)在给全部数组元素赋初值时，可以不指定数组长度
+	int a8[] = { 0, 1, 2, 3, 4 }; //长度为5
+	//int a8[];  不合法
+
+	// 5) 如果定义数组时将储存类别定义为全局的或局部静态的，则c++编译器自动地将所有数组元素的初值置为0。如果储存类别定义为局部动态的，则数组元素无确定初值。
+
+	// A
+	static int y[5]; //局部数组 静态型 各元素初值为0
+	int i2, z[5]; //局部数组 动态型 各元素初值不确定
+
+	for (i2 = 0; i2 <= 4; i2++)
+		cout << setw(3) << x1[i2];
+	cout << endl;
+
+	for (i2 = 0; i2 <= 4; i2++)
+		cout << setw(3) << y[i2];
+	cout << endl;
+
+	for (i2 = 0; i2 <= 4; i2++)
+		cout << setw(3) << z[i2];
+	cout << endl;
+
+	int a52[3][4] = { {1, 3, 5, 7}, {}, {} };  //见下
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 4; j++)
+			cout << a52[i][j] << '\t';
+		cout << endl;
+	}
+	cout << endl;
+
+	int a111[10] = {}; //定义初赋值可以是空数组，此时每个元素都是0，而不是随机值，这相当于定义初赋值时那（一部分元素）的个数为0
+	for (int i = 0; i < 10; i++)
+		cout << a111[i] << '\t';
+	cout << endl;
+
+	// 数组处理的限制 c++不允许对数组进行整体操作，数组上的整体操作是指将整个数组作为一个整体来处理的任何操作，包括整体赋值、整体比较、整体输入输出，只能通过逐一访问数组元素来完成。
+	// 赋值
+	/*
+	int b[5];
+	b = { 0, 0, 0, 0, 0 };
+	非法
+	*/
+
+	int b[10];
+	for (int ib = 0; ib < 10; ib++)
+		b[ib] = ib;
+
+	//输出 
+	// cout << b << endl; ????????????
+
+	for (int ib = 0; ib < 10; ib++)
+		cout << setw(3) << b[ib];
+	cout << endl;
+
+
+
+	for (int ib = 0; ib < 10; ib++)
+		b[ib] = a1[ib];
+	for (int ib = 0; ib < 10; ib++)
+		cout << setw(3) << b[ib];
+	cout << endl;
+
+	// 非等长赋值？
+	int c[5] = { 0 };
+	for (int ib = 0; ib < 10; ib++)
+		b[ib] = c[ib];
+	for (int ib = 0; ib < 10; ib++)
+		cout << setw(3) << b[ib];
+	cout << endl; //前5个是0，后五个是随机值 因为b[10]是动态局部数组
+
+	//输入
+	/*
+	int d[5];
+	cin >> d[1] >> d[2] >> d[3] >> d[4] >> d[5];
+	非法
+	*/
+
+	int d[5];
+	for (int id = 0; id < 5; id++)
+		cin >> d[id];
+	for (int id = 0; id < 5; id++)
+		cout << setw(3) << d[id];  //d[d]非法
+	cout << endl;
+
+	//比较
+	/*
+	if (a1[10] > b[10])
+		cout << 'w' << endl;
+	非法
+	*/
+
+	int e1[10] = { 1, 2, 3, 4, 5, 0, 0, 0, 0, 0 };
+	int e2[10] = { 0, 9, 8, 7, 3 };
+	for (int ie = 0; ie < 10; ie++)
+	{
+		if (e1[ie] < e2[ie])
+		{
+			cout << e1[ie] << ' ' << e2[ie] << endl;
+			cout << 'w' << endl;
+		}
+	}
+
+	//fibonacci
+	int j, f[20] = { 1, 1 }, sum = f[0] + f[1];
+	for (j = 2; j < 20; j++)
+	{
+		f[j] = f[j - 2] + f[j - 1];
+		sum += f[j];
+	}
+
+	for (j = 0; j < 20; j++)
+	{
+		cout << f[j] << '\t';
+		if ((j + 1) % 5 == 0) //表示每五个一行 注意+1
+			cout << endl;
+	}
+
+	cout << "前二十项和为 " << sum << endl;
+
+	// 将一个数分解到数组 然后分别正向、反向输出
+	int n, j1 = 0, k, an[20];
+	cout << "input a number:\n";
+	cin >> n;
+	while (n != 0)
+	{
+		an[j1++] = n % 10;
+		n = n / 10;
+	}
+
+	cout << "j1=" << j1 << endl;
+	for (k = j1 - 1; k >= 0; k--) //j1-1
+		cout << an[k] << '\t';
+	cout << endl;
+
+	for (k = 0; k < j1; k++)
+		cout << an[k] << '\t';
+	cout << endl;
+
+	//------
+
+	n = 0, j1 = 0, k = 0, an[20];
+	cout << "input a number:\n";
+	cin >> n;
+	for (; n > 0; j1++)
+	{
+		an[j1] = n % 10;
+		n /= 10;
+	}
+	cout << an[0] << an[1] << an[2] << an[3] << endl;
+
+	cout << "j1=" << j1 << endl;
+	for (k = j1 - 1; k >= 0; k--)
+		cout << an[k] << '\t';
+	cout << endl;
+
+	for (k = 0; k < j1; k++)
+		cout << an[k] << '\t';
+	cout << endl;
+}
+
+//7.1.2
+#include"pch.h"
+#include <iostream>
+using namespace std;
+
+#define N1 7
+
+void inverse(int b[N1]) //li7.6 逆序存放数组 注意返回值为空类型
+{
+	for (int i = 0; i < N1 / 2; i++) //N1 / 2即可
+	{
+		int t = b[i];
+		b[i] = b[N1 - 1 - i]; //N1 - 1 - i
+		b[N1 - 1 - i] = t;
+	}
+}
+
+int main(void)
+{
+	//7.1.2 1)一维数组作为函数参数 数组元素也可以作为函数的实参，与变量作为实参一样，是单向值传递
+	//数组大小比较： 如果a数组中元素的值大于b数组中对应元素的值的个数多于b数组中元素的值大于a数组中对应元素的值的个数，则认为a数组大于b数组
+
+	//li7.5 数组大小比较
+	int large(int, int);
+	int a1[10], b1[10], i1, great = 0, equal = 0, less = 0, n1;
+	cout << "输入数组元素个数:\n";
+	cin >> n1;
+	cout << "输入数组a:\n";
+	for (i1 = 0; i1 < n1; i1++)
+	{
+		cin >> a1[i1];
+	}
+	cout << "输入数组b:\n";
+	for (i1 = 0; i1 < n1; i1++)
+	{
+		cin >> b1[i1];
+	}
+	for (int i1 = 0; i1 < n1; i1++)
+	{
+		int r;
+		if ((r = large(a1[i1], b1[i1])) == 1) great++; //在if条件里面给变量r赋值
+		else if (r == 0) equal++;
+		else less++;
+	}
+	cout << "a[i]大于b[i]的次数" << great << endl;
+	cout << "a[i]等于b[i]的次数" << equal << endl;
+	cout << "a[i]小于b[i]的次数" << less << endl;
+	if (great > less)
+		cout << "数组a大于数组b" << endl;
+	else if (great < less)
+		cout << "数组a小于数组b" << endl;
+	else
+		cout << "数组a等于数组b" << endl;
+
+	//7.1.2 2)数组名作为函数的实参
+	//li7.6 逆序存放数组
+	//形参数组的值改变，实参数组的值也会改变
+	int a2[10] = { 7, 2, 5, 4, 3, 6, 1 }, i;
+	cout << "original:\n";
+	for (int i = 0; i < N1; i++)
+		cout << a2[i] << '\t';
+	cout << endl;
+	inverse(a2); //参数只需要数组名
+	for (int i = 0; i < N1; i++)
+		cout << a2[i] << '\t';
+	cout << endl;
+
+
+	return 0;
+}
+
+int large(int x, int y) //7.1.2 数组大小比较。一维数组作为函数参数 数组元素也可以作为函数的实参，与变量作为实参一样，是单向值传递
+{
+	int flag; //定义这个变量，下面只需要一个return语句
+	if (x > y)
+		flag = 1;
+	else if (x < y)
+		flag = 0;
+	else
+		flag = -1;
+	return flag;
+}
+
+//7.1.2 筛选找素数 查找 求交集
+#include"pch.h"
+#include<iostream>
+using namespace std;
+
+#define N 100
+#define M 10
+
+int search(int a[], int n, int x) //li7.11 顺序查找法 //li7.13 求交集 找出交集中元素的个数
+{
+	for (int i = 0; i < n; i++)
+		if (x == a[i]) return i;
+	return -1;
+}
+
+void prime(int a[], int n) //li7.10 筛选法求素数
+{
+	for (int i = 1; i < n / 2; i++) //n/2: i最大到49， a[49]=50 50*2=100←数组最大数 若51 51*2=102 超过100
+		if (a[i] != 0) // 若a[i]为0， 不用处理
+			for (int j = i + 1; j < n; j++) //jmax=99, a[99]=100
+				if (a[j] != 0)
+					if (a[j] % a[i] == 0)
+						a[j] = 0;
+}
+
+int bi_search(int a[], int n, int x) //li7.12 折半查找法 前提：数组中的元素的值已经排好序
+{
+	int low = 0, mid, up = n - 1;
+	while (low <= up)
+	{
+		mid = (low + up) / 2;
+		if (x == a[mid])
+			return mid;
+		else if (x < a[mid])
+			up = mid - 1;
+		else
+			low = mid + 1;
+	}
+	return -1;
+}
+
+int intersection(int a[], int b[], int c[], int m, int n)
+{
+	int k = 0;
+	for (int i = 0; i < m; i++)
+		if (search(b, n, a[i]) != -1)
+			c[k++] = a[i];
+	return k;
+}
+
+int main(void)
+{
+	//li7.10 筛选法求素数
+	int a[N];
+	for (int i = 1; i < N; i++) //赋值给数组
+		a[i] = i + 1;
+	prime(a, N);
+	for (int i = 1, n = 0; i < N; i++)
+		if (a[i] != 0) //若a[i]为0，不用处理
+		{
+			cout << a[i] << '\t';
+			n++;
+			if (n % 5 == 0)
+				cout << endl;
+		}
+
+	//li7.11 顺序查找法
+	int array[] = { 6, 3, 18, 24, 9, 32, 6, 46, 1, 12 }, x;
+	cout << "input a number:\n";
+	cin >> x;
+	cout << "original:\n";
+	for (int i = 0; i < M; i++)
+		cout << array[i] << '\t';
+	int p = search(array, M, x);
+	if (p >= 0)
+		cout << "查找成功！数组元素下标为：" << p << endl;
+	else
+		cout << "未查找到！";
+
+	//li7.12 折半查找法 前提：数组中的元素的值已经排好序
+	int array1[] = { 1, 3, 6, 24, 30, 32, 36, 46, 100, 120 };
+	cout << "input a number:\n";
+	cin >> x;
+	cout << "original:\n";
+	for (int i = 0; i < M; i++)
+		cout << array1[i] << '\t';
+	p = bi_search(array1, M, x);
+	if (p >= 0)
+		cout << "查找成功！数组元素下标为：" << p << endl;
+	else
+		cout << "未查找到！";
+
+	//li7.13 求交集 找出交集中元素的个数
+	int a1[] = { 4, 8, 2, 1, 9, 10 }, b[] = { 2, 5, 3, 9, 7 }, c[20], count, i;
+	count = intersection(a1, b, c, 6, 5);
+	for (int i = 0; i < count; i++)
+		cout << c[i] << '\t';
+	cout << endl;
+	cout << "交集元素个数：" << count << endl;
+
+	return 0;
+}
+
+//7.1.2 数组元素大小排序
+#include"pch.h"
+#include<iostream>
+using namespace std;
+
+#define N 6
+void bubble_sort(int a[], int n) //li7.7 冒泡法排序
+{
+	for (int i = 0; i < n - 1; i++) //n-1: 如果有n个数 要进行n-1次比较
+		for (int j = 0; j < n - 1 - i; j++) //n-1-i: 第j次比较要进行n-j次两两比较
+			if (a[j] > a[j + 1])
+			{
+				int t = a[j + 1];
+				a[j + 1] = a[j];
+				a[j] = t;
+			}
+}
+
+void select_sort(int a[],int n) //li7.8 选择法排序
+{
+	for (int i = 0; i < n - 1; i++)
+	{
+		int j;
+		int p = i;
+		for (j = i + 1; j < n; j++) //j++ 所以for循环之后j和p不等
+			if (a[j] < a[p]) p = j;
+		if (p != i) //表示第i趟扫描找到的最小数是本次扫描范围内的第一个数，它应储存在该位置，不需要交换
+		{
+			int t = a[p];
+			a[p] = a[i];
+			a[i] = t;
+		}
+	}
+
+	/*
+	选择法变种 效率比上面的低 交换次数更多
+	第一次 a[0]和后面各元素比较 不断交换 把最小的放到最前面 后面类似
+
+	for (int i = 0; i < n - 1; i++)
+	{
+		for (int j = i + 1; j < n; j++)
+			if (a[j] < a[i])
+			{
+				int t = a[j];
+				a[j] = a[i];
+				a[i] = t;
+			}
+	}
+	*/
+
+}
+
+void ba_ins_sort(int a[], int n)//li7.9 插入法排序-后插
+{
+	for (int i = 1; i < n; i++) //对数组每一个元素
+	{
+		int j, p;
+		p = a[i];
+		for (j = i - 1; j >= 0 && a[i] < a[j]; j--) //和前面的元素比较 符合条件就后移
+			a[j + 1] = a[j];
+		a[j + 1] = p;
+	}
+
+	/*
+	这样的话 a[j]赋值给a[i]→j--→循环下面a[i]又赋值给a[j+1]相当于j--之前的a[j] 
+	假设前两个数是9 2：
+	for (int i = 1; i < n; i++) 
+	{
+		int j;
+		for (j = i - 1; j >= 0 && a[i] < a[j]; j--) //  即a[1]<a[0] 2<9 
+			a[j + 1] = a[j]; //a[1]=a[0] 即9赋值给a[1] 此时a[1]=9 之后j-- →j=-1 退出循环
+		a[j + 1] = a[i]; //a[0]=a[1] 即a[0]=9   从此处看出 此代码还需一个媒介
+	}
+	*/
+}
+
+void ah_ins_sort(int a[], int n) //li7.9 插入法排序-前插
+{
+	for (int i = 1; i < n; i++)
+	{
+		int j;
+		int p = a[i];
+		for (j = 0; j < i && p >= a[j]; j++) //找位置→
+			;
+		for (int k = i; k > j; k--) //→复合条件就后移
+			a[k] = a[k - 1];
+		a[j] = p;
+
+	}
+}
+
+int main(void)
+{
+	//li7.7 冒泡法排序
+	//如果有n个数 要进行n-1次比较，第j次比较要进行n-j次两两比较
+	int a1[N];
+	cout << "输入数组:\n";
+	for (int i = 0; i < N; i++)
+		cin >> a1[i];
+	bubble_sort(a1, N);
+	cout << "after sorting:\n";
+	for (int i = 0; i < N; i++)
+		cout << a1[i] << '\t';
+	cout << endl;
+
+	//li7.8 选择法排序
+	//假设有6个数
+	//第一次 a[0]到a[5]最小数的下标找到 设为p， 若p!=0, a[0]与a[p]交换位置
+	//第二次 a[1]到a[5]……
+	//共需n-1次扫描 第j次有n-j次比较
+	//第i次扫描时（i = 0 ~ 4)，扫描范围的第一个元素的下标为i，最后一个元素的下标为5
+
+	int b[N];
+	cout << "输入数组:\n";
+	for (int i = 0; i < N; i++)
+		cin >> b[i];
+	select_sort(b, N);
+	cout << "after sorting:\n";
+	for (int i = 0; i < N; i++)
+		cout << b[i] << '\t';
+	cout << endl;
+
+	//li7.9 插入法排序-后插
+	//数组前有i个元素排成升序，要将a[i]元素插入，使前i+1个元素保持升序。
+	//首先将a[i]赋值给p，将p依次和a[i-1],a[i-2]...a[0]进行比较，将比p大的元素的值依次右移一个位置，直到有某个j(0<=j<=i-1),有a[j]<=p成立，则使得a[j+1]=p
+	//如果不存在这样的a[j],前面的元素依次右移，最终a[0]=p
+	int c[N];
+	cout << "输入数组:\n";
+	for (int i = 0; i < N; i++)
+		cin >> c[i];
+	ba_ins_sort(c, N);
+	cout << "after sorting:\n";
+	for (int i = 0; i < N; i++)
+		cout << c[i] << '\t';
+	cout << endl;
+
+	//li7.9 插入法排序-前插
+	int d[N];
+	cout << "输入数组:\n";
+	for (int i = 0; i < N; i++)
+		cin >> d[i];
+	ah_ins_sort(d, N);
+	cout << "after sorting:\n";
+	for (int i = 0; i < N; i++)
+		cout << d[i] << '\t';
+	cout << endl;
+
+	return 0;
+}
+
+//zy5-1
+#include"pch.h"
+#include<iostream>
+using namespace std;
+double average(double, double, double, double); //the type of return value, ';'
+int main(void)
+{
+	cout << "input 4 numbers:\n";
+	double a, b, c, d;
+	cin >> a >> b >> c >> d;
+	cout << "the average of the 4 numbers is " << average(a, b, c, d) << endl;
+	return 0;
+}
+
+double average(double a, double b, double c, double d)
+{
+	return((a + b + c + d) / 4);
+}
+
+//zy5-2
+#include"pch.h"
+#include<iostream>
+using namespace std;
+int min(int, int);
+double min(double, double);
+int main(void)
+{
+	cout << "input two integers:\n";
+	int int1, int2;
+	cin >> int1 >> int2;
+	cout << "the smaller one of the two integers is " << min(int1, int2) << endl;
+	cout << "input two real numbers:\n";
+	double double1, double2;
+	cin >> double1 >> double2;
+	cout << "the smaller one of the two real numbers is " << min(double1, double2) << endl;
+	return 0;
+}
+
+int min(int x, int y)
+{
+	return(x < y ? x : y);
+}
+
+double min(double x, double y)
+{
+	return(x < y ? x : y);
+}
+
+//zy5-3
+#include"pch.h"
+#include<iostream>
+#include<cmath>
+using namespace std;
+int main(void)
+{
+	int dec_to_bin(int num);
+	cout << "please input an integer:\n";
+	int num;
+	cin >> num;
+	cout << "the integer represented in binary notation is:" << dec_to_bin(num) << endl;
+	return 0;
+}
+
+int power, medium, remainder1, dec1; 
+//why can't be a remainder?
+//why can't be a dec?
+int dec_to_bin(int num)
+{
+	int digit = 0; //put inside 每层函数运行完当层函数的digit变量消失
+	if (num != 0)
+	{
+		medium = num; //swap
+		num /= 2;
+		remainder1 = medium % 2;
+		digit = remainder1 * int(pow(10, power));
+		power++;
+		dec1 = digit + dec_to_bin(num);
+	}
+	else
+		dec1 = 0;
+	return dec1;
+}
+
+//zy5-3-1
+#include"pch.h"
+#include<iostream>
+using namespace std;
+
+void d2b(int i);
+
+int main(void)
+{
+	cout << "input the integer:\n";
+	int i;
+	cin >> i;
+	cout << "the integer represented by binary notation is:";
+	d2b(i);
+	return 0;
+}
+
+void d2b(int i)
+{
+	if (i == 0)
+		return;
+	else
+	{
+		d2b(i / 2);
+		cout << i % 2;
+	}
+}
+
+//十进制转bin., oct., hex
+#include"pch.h"
+#include<iostream>
+using namespace std;
+
+void func1(int num, int n);
+
+int main(void)
+{
+	int num, n;
+	cout << "input an integer represented in dec.:\n";
+	cin >> num;
+	cout << "input the type of system in the form of an integer:\n";
+	cin >> n;
+	cout << "the integer represented by";
+	switch(n)
+	{
+	case 2: cout << " bin. "; break;
+	case 8: cout << " oct. "; break;
+	case 16: cout << "hex. "; break;
+	}
+	cout << "notation is:";
+	func1(num, n);
+	return 0;
+}
+
+void func1(int num, int n)
+{
+	if (num == 0)
+		return;
+	else
+	{
+		if (n == 2)
+		{
+			func1(num / 2, n);
+			cout << num % 2;
+		}
+		if (n == 8)
+		{
+			func1(num / 8, n);
+			cout << num % 8;
+		}
+		if (n == 16)
+		{
+			func1(num / 16, n);
+			if (num % 16 < 10)
+				cout << num % 16;
+			if (num % 16 == 10)
+				cout << 'A';
+			if (num % 16 == 11)
+				cout << 'B';
+			if (num % 16 == 12)
+				cout << 'C';
+			if (num % 16 == 13)
+				cout << 'D';
+			if (num % 16 == 14)
+				cout << 'E';
+			if (num % 16 == 15)
+				cout << 'F';
+		}
+	}
+}
+
+//实验五
+#include"pch.h"
+#include<iostream>
+#include<cmath>
+#include<stdlib.h> //清屏：system("cls") 所在头文件
+using namespace std;
+
+void menu();
+float count(float, int);
+bool send(float, float);
+
+int main()
+{
+	while (true)
+	{
+		menu();
+		cout << "input an integer from 0 to 2 representing the function you want:\n";
+		loop: int input;
+		cin >> input;
+
+		if (input == 1)
+		{
+			float sum = 0;
+			while (true)
+			{
+				float x;
+				cout << "input the price of the item:\n";
+				cin >> x;
+				int y;
+				cout << "input the number of the item:\n";
+				cin >> y;
+				sum += count(x, y);
+
+				cout << "press 0 to exit the counting system, press others to continue counting:\n";
+				int z;
+				cin >> z;
+				if (z == 0)
+					break;
+				else
+					;
+			}
+			cout << "the total is: " << sum << endl;
+		}
+
+		else if (input == 2)
+		{
+			cout << "input the location in the form of x<space>y :\n";
+			float x, y;
+			cin >> x >> y;
+			if (send(x, y) == true)
+				cout << "delivery is availible.\n";
+			else
+				cout << "delivery is not availible.\n";
+		}
+
+		else if (input == 0)
+			break;
+
+		else
+		{
+			cout << "error! invalid data! please input again!\n";
+			goto loop;
+		}
+
+	cout << "press <Enter> to continue, press 0 to exit the system:\n";
+	char input1;
+	
+loop1: 
+	cin.ignore(1); //加上这个接收前面按0后的<Enter>!!!!!!! 而且这个语句必须在loop1之后，接收后面用户输入的非法字符之后按的<Enter>回到loop1，若loop1在cin.get()之前，用户输入非法字符后<Enter>，相当于执行下面第一个if语句。
+	cin.get(input1);
+	if (int(input1) == 10)
+		;
+	else if (int(input1) == 48)
+		break;
+	else
+	{
+		cout << "error! invalid data! please input again!\n";
+		goto loop1;
+	}
+
+
+		system("cls"); //清屏
+	}
+
+	
+	return 0;
+}
+
+void menu()
+{
+	cout << "******************************" << endl;
+	cout << "欢迎来到星星超市 " << endl;
+	cout << "  本超市坐标(22，56)" << endl;
+	cout << "  超市3公里范围内可免费配送！" << endl;
+	cout << " 你可以选择下列功能(0-2): " << endl;
+	cout << "1、结账" << endl;
+	cout << "2、查询是否配送范围" << endl;
+	cout << "0、退出" << endl;
+	cout << "******************************" << endl;
+}
+
+float count(float price, int number)
+{
+	return (price * number);
+}
+
+bool send(float x, float y)
+{
+	double z;
+	z = sqrt(pow(x - 22, 2) - pow(y - 56, 2));
+	
+	if (z <= 3)
+		return true;
+	else
+		return false;
+}
+
+//实验五-拓展
+#include"pch.h"
+#include<iostream>
+#include<cmath>
+#include<stdlib.h> //清屏：system("cls") 所在头文件
+using namespace std;
+
+void menu();
+float count2(float, int, float);
+bool send(float, float);
+
+int main()
+{
+	while (true)
+	{
+		menu();
+		cout << "input an integer from 0 to 2 representing the function you want:\n";
+	loop: int input;
+		cin >> input;
+
+		if (input == 1)
+		{
+			float x, y;
+			float p, sum;
+			p = 0;
+			while (true)
+			{
+				cout << "input the price of the item:\n";
+				cin >> x;
+				cout << "input the number of the item:\n";
+				cin >> y;
+				sum = count2(x, y, p);
+
+				cout << "press 0 to exit the counting system, press others to continue counting:\n";
+				int z;
+				cin >> z;
+				if (z == 0)
+					break;
+				else
+					;
+			}
+
+			int i = 0;
+			while (p < sum) //不是<=
+			{
+				cout << sum - p;
+				if (i != 0)
+					cout << " still ";
+				cout << "should be paid\n";
+				float pd;
+				cout << "input the amount paid:\n";
+				cin >> pd;
+				p += pd;
+				i++;
+			}
+
+			count2(0, 0, p); //前两个参数是0，否则会在count2函数被运算，叠加进sum
+
+		}
+
+		else if (input == 2)
+		{
+			cout << "input the location in the form of x<space>y :\n";
+			float x, y;
+			cin >> x >> y;
+			if (send(x, y) == true)
+				cout << "delivery is availible.\n";
+			else
+				cout << "delivery is not availible.\n";
+		}
+
+		else if (input == 0)
+			break;
+
+		else
+		{
+			cout << "error! invalid data! please input again!\n";
+			goto loop;
+		}
+
+		cout << "press <Enter> to continue, press 0 to exit the system:\n";
+		char input1;
+
+	loop1:
+		cin.ignore(1); //加上这个接收前面按0后的<Enter>!!!!!!! 而且这个语句必须在loop1之后，接收后面用户输入的非法字符之后按的<Enter>回到loop1，否则用户输入非法字符后<Enter>，相当于执行下面第一个if语句。
+		cin.get(input1);
+		if (input1 == 10)
+			;
+		else if (input1 == 48)
+			break;
+		else
+		{
+			cout << "error! invalid data! please input again!\n";
+			goto loop1;
+		}
+
+
+		system("cls"); //清屏
+	}
+
+
+	return 0;
+}
+
+void menu()
+{
+	cout << "******************************" << endl;
+	cout << "欢迎来到星星超市 " << endl;
+	cout << "  本超市坐标(22，56)" << endl;
+	cout << "  超市3公里范围内可免费配送！" << endl;
+	cout << " 你可以选择下列功能(0-2): " << endl;
+	cout << "1、结账" << endl;
+	cout << "2、查询是否配送范围" << endl;
+	cout << "0、退出" << endl;
+	cout << "******************************" << endl;
+}
+
+float count2(float price, int number, float cash)
+{
+	static float sum = 0;
+	sum += price * number;
+	if (fabs(cash) < 1e-7)
+		return sum;
+	else
+	{
+		cout << "the change is " << cash - sum << endl;
+		return 0;
+	}
+}
+
+bool send(float x, float y)
+{
+	double z;
+	z = sqrt(pow(x - 22, 2) - pow(y - 56, 2));
+
+	if (z <= 3)
+		return true;
+	else
+		return false;
+}
